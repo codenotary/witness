@@ -20,8 +20,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/testifysec/witness/cmd/witness/options"
-	"github.com/testifysec/witness/pkg"
+	witness "github.com/testifysec/witness/pkg"
 	"github.com/testifysec/witness/pkg/attestation"
+	"github.com/testifysec/witness/pkg/attestation/product"
 	"github.com/testifysec/witness/pkg/log"
 	"github.com/testifysec/witness/pkg/rekor"
 )
@@ -101,6 +102,19 @@ func runRun(ro options.RunOptions, args []string) error {
 		}
 
 		log.Infof("Rekor entry added at %v%v\n", rekorServer, resp.Location)
+	}
+
+	if ro.CasApiKey != "" {
+		for _, att := range result.Collection.Attestations {
+			if att.Type == product.Type {
+				a := att.Attestation.(*product.Attestor)
+				err = casNotarize(ro, a, signedBytes)
+				if err != nil {
+					return fmt.Errorf("error notarizing artifact; %w", err)
+				}
+
+			}
+		}
 	}
 
 	return nil

@@ -24,6 +24,7 @@ type RunOptions struct {
 	StepName     string
 	RekorServer  string
 	Tracing      bool
+	CasApiKey    string
 }
 
 func (ro *RunOptions) AddFlags(cmd *cobra.Command) {
@@ -34,4 +35,5 @@ func (ro *RunOptions) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&ro.StepName, "step", "s", "", "Name of the step being run")
 	cmd.Flags().StringVarP(&ro.RekorServer, "rekor-server", "r", "", "Rekor server to store attestations")
 	cmd.Flags().BoolVar(&ro.Tracing, "trace", false, "enable tracing for the command")
+	cmd.Flags().StringVar(&ro.CasApiKey, "cas-api-key", "", "API key for Codenotary Attestation Service")
 }
